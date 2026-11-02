@@ -1,0 +1,28 @@
+CATastro – GESTIÓN DE RECORRIDOS | RECOLECCIÓN V1.17
+
+CAMBIOS
+- Snapshot local en cada cambio de resultado o GPS.
+- Cola persistente: un solo snapshot pendiente por ID_RECORRIDO; cada cambio reemplaza al anterior.
+- Envío automático cuando hay conexión y reintento al recuperar internet.
+- La sábana actualiza por ID_REGISTRO = ID_RECORRIDO::VIVIENDA, sin duplicar filas.
+- Se aceptan avances parciales en Sheets; el aplicativo conserva las validaciones para finalizar.
+- Confirmación del Apps Script dirigida también a window.top.
+- Historial local con estado de sincronización.
+- Guardar, finalizar y sincronizar limpian el espacio de trabajo sin borrar historial ni cola.
+
+ACTUALIZACIÓN
+1. Reemplaza los archivos del sitio GitHub por los incluidos en el ZIP y publica.
+2. En Apps Script, abre el proyecto vinculado a CATastro – BASE CENTRAL DE RECOLECCIÓN.
+3. Reemplaza TODO Code.gs por el incluido en este ZIP y guarda.
+4. Implementar > Administrar implementaciones > Editar (lápiz) > Nueva versión > Implementar.
+5. Conserva la URL /exec ya configurada en app.js si estás actualizando el mismo proyecto.
+6. En el móvil, cierra y vuelve a abrir el aplicativo para cargar V1.17.
+
+PRUEBA
+- Cambia un resultado y espera el envío automático.
+- Cambia otro dato de la misma vivienda: debe actualizar la misma fila.
+- Desconecta internet, modifica un registro y comprueba que queda en cola.
+- Recupera internet y verifica el envío automático.
+- Guarda y finaliza recorridos para comprobar limpieza del formulario e historial.
+
+La conexión real con tu despliegue de Apps Script no se pudo ejecutar desde este entorno; debe verificarse con la prueba anterior.
