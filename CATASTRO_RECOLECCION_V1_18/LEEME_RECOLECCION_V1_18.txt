@@ -1,0 +1,28 @@
+CATastro – GESTIÓN DE RECORRIDOS | RECOLECCIÓN V1.18
+
+CORRECCIONES
+- La tabla del historial ahora es visible en móvil; antes la regla CSS ocultaba todos los .table-wrap.
+- Se elimina el botón «Finalizar recorrido». El flujo queda con Guardar y Sincronizar.
+- Guardar conserva el recorrido en el dispositivo, lo deja en historial y limpia el formulario.
+- Sincronizar guarda el estado actual, limpia inmediatamente el formulario y envía la cola si hay conexión.
+- Offline: el recorrido queda en cola y el formulario se limpia.
+- Cola: un snapshot vigente por ID_RECORRIDO; cambios posteriores reemplazan el snapshot anterior.
+- Reintento al recuperar conexión usando online, pageshow, focus, visibilitychange y comprobación periódica para móviles.
+- Apps Script acepta el POST JSON simple no-cors y actualiza la sábana por ID_REGISTRO = ID_RECORRIDO::VIVIENDA.
+- Se conserva el diseño, las asignaciones y la selección precargada.
+
+ACTUALIZACIÓN OBLIGATORIA
+1. GitHub Pages: reemplaza los archivos del aplicativo por los de este ZIP y publica.
+2. Apps Script: reemplaza TODO Code.gs por el incluido, guarda y despliega una Nueva versión desde Administrar implementaciones > Editar > Nueva versión > Implementar.
+3. Conserva la URL /exec del mismo proyecto. No crees otra hoja ni MAESTRA.
+4. En el móvil, cierra y vuelve a abrir la página para cargar V1.18.
+
+PRUEBA
+- Guardar recorrido: debe limpiarse el formulario y aparecer la fila en historial.
+- Cambiar resultado y pulsar Sincronizar: debe limpiarse inmediatamente.
+- Verificar en Sheets que la misma ID_REGISTRO se actualiza.
+- Desconectar internet, modificar y sincronizar: debe quedar en cola.
+- Recuperar internet: debe reintentarse automáticamente.
+
+NOTA TÉCNICA
+El POST no-cors es opaco para el navegador. El aplicativo considera enviado cuando el navegador entrega la solicitud; la verificación final de escritura debe hacerse en Sheets. El backend es idempotente por ID_REGISTRO, por lo que los reintentos no deben crear filas duplicadas.
