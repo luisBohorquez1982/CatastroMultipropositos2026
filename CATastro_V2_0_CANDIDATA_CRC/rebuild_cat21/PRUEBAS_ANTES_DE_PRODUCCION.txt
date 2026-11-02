@@ -1,0 +1,28 @@
+CATastro V2.0 — PRUEBAS DE ACEPTACIÓN OBLIGATORIAS
+
+Esta entrega es una CANDIDATA DE VALIDACIÓN, no una declaración de producción lista. No reemplazar el despliegue productivo hasta completar todas las pruebas.
+
+A. PRUEBAS LOCALES
+1. Cargar la página y verificar que aparecen asignaciones.
+2. Elegir una asignación y generar recorrido con universo <=12; verificar que aparece inmediatamente en Historial y sobrevive a actualizar la página.
+3. Generar recorrido con universo >12; verificar 12 seleccionadas y universo auditado completo.
+4. Cambiar resultados y GPS; actualizar la página y comprobar que todo se recupera.
+5. Guardar recorrido parcial; abrir desde Historial; comprobar que se puede continuar.
+6. Intentar finalizar con al menos una vivienda Pendiente; debe bloquearse.
+7. Completar todos los resultados; finalizar; abrir desde Historial; comprobar modo solo lectura y controles deshabilitados.
+8. Verificar que una asignación ya trabajada no permita generar una segunda selección.
+
+B. PRUEBAS DE SINCRONIZACIÓN
+1. Instalar Code.gs en Apps Script vinculado al proyecto; confirmar SPREADSHEET_ID y token.
+2. Guardar y desplegar nueva versión en la implementación existente (no crear otra URL).
+3. Abrir /exec: debe mostrar version 2.0.0, hoja SABANA_RECOLECCION y hojaEncontrada true.
+4. Enviar un recorrido de prueba completo; verificar que el historial lo marca ENVIADO únicamente después de confirmación JSONP.
+5. Verificar en Sheets que las filas del ID_RECORRIDO estén presentes y que ID_REGISTRO no se duplique al reenviar.
+6. Simular desconexión: completar resultados, finalizar; debe quedar pendiente local. Recuperar internet y verificar envío y confirmación.
+7. Cambiar un resultado durante un envío; el snapshot más reciente debe permanecer en cola y no marcarse enviado prematuramente.
+
+C. MIGRACIÓN Y SEGURIDAD DE DATOS
+- La V2 copia registros compatibles desde CATASTRO_V11_RECORDS y CATASTRO_V11_QUEUE sin borrar ni modificar las llaves anteriores.
+- Los registros migrados se vuelven a poner en cola porque el estado ENVIADO de versiones anteriores no era verificable.
+- No borrar almacenamiento del navegador, caché del sitio ni datos de la aplicación durante la migración.
+- El backend actual agrega dos columnas nuevas al final de SABANA_RECOLECCION si los primeros 30 encabezados coinciden; si detecta encabezados incompatibles, se detiene sin sobrescribirlos.
