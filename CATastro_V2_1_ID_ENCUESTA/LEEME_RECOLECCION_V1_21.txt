@@ -1,0 +1,21 @@
+CATastro – Gestión de recorridos V1.21
+
+CAMBIOS CRÍTICOS
+- Apps Script apunta explícitamente al Spreadsheet ID indicado por el usuario.
+- Endpoint /exec informa versión 1.5.0 y verifica existencia de SABANA_RECOLECCION.
+- Sincronización por lotes de hasta 3 recorridos y confirmación de escritura mediante consulta JSONP.
+- La cola local solo se depura cuando el servidor confirma ok=true; si no, conserva los datos para reintento.
+- Guardar recorrido lo marca FINALIZADO únicamente cuando todas las viviendas seleccionadas tienen resultado distinto de Pendiente; de lo contrario queda EN_PROCESO.
+- Recuperación de borrador con modal integrado al diseño.
+
+IMPLEMENTACIÓN
+1. Subir los archivos web del ZIP al repositorio GitHub Pages, reemplazando los archivos equivalentes.
+2. Reemplazar Code.gs en el proyecto Apps Script por el incluido.
+3. Guardar. Ejecutar crearSabanaRecoleccion() solo si la hoja aún no tiene encabezados; autorizar si lo solicita.
+4. Implementar > Gestionar implementaciones > lápiz de la implementación existente > Nueva versión > Implementar.
+5. Mantener la URL /exec actual. Abrirla y comprobar version 1.5.0, hojaEncontrada true y estado LISTO.
+6. En el teléfono, actualizar la página. No borrar datos del sitio ni caché.
+
+IMPORTANTE
+- No se puede validar desde aquí la autorización de la cuenta Google ni probar escritura real en tu hoja. La prueba de extremo a extremo debe hacerse con un recorrido de prueba y comprobar que el botón muestre confirmación de filas.
+- No eliminar datos locales ni la cola pendiente.
