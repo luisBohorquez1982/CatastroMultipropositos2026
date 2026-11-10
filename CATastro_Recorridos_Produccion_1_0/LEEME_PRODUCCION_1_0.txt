@@ -1,0 +1,34 @@
+CATastro Producción 1.0 — AJUSTES DE SINCRONIZACIÓN Y ALEATORIO
+
+Base: paquete V2.1.20 entregado por el usuario.
+
+Cambios:
+1. Apps Script escribe ESTADO_SINCRONIZACION = CONFIRMADO únicamente después de procesar el lote y escribir las filas.
+2. Se refuerza la idempotencia ante POST simultáneos con el mismo requestId mediante una segunda comprobación dentro del ScriptLock.
+3. La selección aleatoria urbana usa Fisher-Yates sobre universo único, sin reemplazo, y verifica identificadores seleccionados únicos.
+4. El backend rechaza el lote completo si una selección contiene viviendas/personas duplicadas o sin identificador; evita contaminar la sábana.
+5. Se mantiene lote máximo de 10, confirmación requestId, cola local y trabajo offline.
+6. Se recupera un aviso de confirmación cuando se pulsa manualmente y la cola ya está vacía.
+7. Se renueva el nombre de caché y las referencias de versión a 1.0, manteniendo fallback offline.
+
+PUBLICACIÓN:
+A. GitHub Pages: reemplazar los archivos estáticos por los del ZIP.
+B. Apps Script: reemplazar Code.gs por CATastro_V2_1_21_Code.gs, guardar y actualizar la implementación existente como nueva versión, manteniendo la misma URL /exec.
+C. No borrar localStorage ni respaldos en dispositivos de campo.
+
+PRUEBAS DE ACEPTACIÓN:
+- Urbanos con universo de 12, 13 y 30 viviendas: cada selección debe contener identificadores únicos.
+- Rural disperso: validar recorrido de personas y adicionales.
+- Confirmar que ESTADO_SINCRONIZACION queda CONFIRMADO tras escritura.
+- Confirmar que el historial muestra Finalizado - Confirmado.
+- Probar Chrome normal, Firefox/Mozilla y Edge, con internet y modo offline/retorno.
+
+Validación realizada: sintaxis de app.js, sw.js y Code.gs; integridad del ZIP.
+No se ha ejecutado una escritura real contra el Apps Script productivo desde este entorno.
+
+
+Configuración de producción:
+- Apps Script: URL /exec de producción suministrada por el usuario.
+- Kobo: formulario de producción suministrado por el usuario.
+- Google Sheets: ID de la nueva sábana de producción.
+- Pestaña: SABANA_RECOLECCION.
