@@ -1,0 +1,76 @@
+CATastro Producción 1.0 — AJUSTES DE SINCRONIZACIÓN Y ALEATORIO
+
+Base: paquete V2.1.20 entregado por el usuario.
+
+Cambios:
+1. Apps Script escribe ESTADO_SINCRONIZACION = CONFIRMADO únicamente después de procesar el lote y escribir las filas.
+2. Se refuerza la idempotencia ante POST simultáneos con el mismo requestId mediante una segunda comprobación dentro del ScriptLock.
+3. La selección aleatoria urbana usa Fisher-Yates sobre universo único, sin reemplazo, y verifica identificadores seleccionados únicos.
+4. El backend rechaza el lote completo si una selección contiene viviendas/personas duplicadas o sin identificador; evita contaminar la sábana.
+5. Se mantiene lote máximo de 10, confirmación requestId, cola local y trabajo offline.
+6. Se recupera un aviso de confirmación cuando se pulsa manualmente y la cola ya está vacía.
+7. Se renueva el nombre de caché y las referencias de versión a 1.0, manteniendo fallback offline.
+
+PUBLICACIÓN:
+A. GitHub Pages: reemplazar los archivos estáticos por los del ZIP.
+B. Apps Script: reemplazar Code.gs por CATastro_V2_1_21_Code.gs, guardar y actualizar la implementación existente como nueva versión, manteniendo la misma URL /exec.
+C. No borrar localStorage ni respaldos en dispositivos de campo.
+
+PRUEBAS DE ACEPTACIÓN:
+- Urbanos con universo de 12, 13 y 30 viviendas: cada selección debe contener identificadores únicos.
+- Rural disperso: validar recorrido de personas y adicionales.
+- Confirmar que ESTADO_SINCRONIZACION queda CONFIRMADO tras escritura.
+- Confirmar que el historial muestra Finalizado - Confirmado.
+- Probar Chrome normal, Firefox/Mozilla y Edge, con internet y modo offline/retorno.
+
+Validación realizada: sintaxis de app.js, sw.js y Code.gs; integridad del ZIP.
+No se ha ejecutado una escritura real contra el Apps Script productivo desde este entorno.
+
+
+Configuración de producción:
+- Apps Script: URL /exec de producción suministrada por el usuario.
+- Kobo: formulario de producción suministrado por el usuario.
+- Google Sheets: ID de la nueva sábana de producción.
+- Pestaña: SABANA_RECOLECCION.
+
+
+INICIO LIMPIO DE PRODUCCIÓN 1.0
+- Producción 1.0 utiliza llaves locales independientes (CAT_PROD_1_0_*).
+- No recupera recorridos, colas de sincronización ni recorridos activos de versiones anteriores.
+- Los datos locales antiguos no se borran físicamente; quedan aislados y no interfieren con Producción 1.0.
+- La muestra de asignaciones precargada se conserva; el historial operativo y los recorridos comienzan vacíos.
+
+
+ACTUALIZACIÓN QUIRÚRGICA 1.0.1 — RESULTADOS Y FIRMA
+- Se conserva el almacenamiento local CAT_PROD_1_0_* de Producción 1.0.
+- No se modifica el mecanismo de selección, GPS, Kobo ni la sincronización ordinaria.
+- Se agregan las nuevas opciones de resultado, manteniendo las opciones existentes.
+- La opción existente "Otro" pasa a mostrarse como "Otro cuál" y solicita detalle.
+- Para resultado "Efectiva" aparece el botón "Firmar", con captura en ventana emergente.
+- La firma se conserva localmente hasta que el recorrido se haya sincronizado y Drive confirme la carga.
+- La firma se almacena como PNG en la carpeta de Drive configurada y su URL queda en la columna URL_FIRMA.
+- Se agregan al final de SABANA_RECOLECCION las columnas DETALLE_OTRO y URL_FIRMA. Las 44 columnas previas no se reordenan ni se sobrescriben.
+IMPORTANTE PARA PUBLICAR:
+1. Antes de desplegar, hacer copia de seguridad de la hoja y exportar respaldo local desde cada dispositivo con cola pendiente.
+2. Sustituir el Apps Script por CATastro_Produccion_1_0_1_AppsScript.gs y guardar.
+3. Implementar como nueva versión de la implementación web app existente, conservando la misma URL /exec y permisos de acceso.
+4. Publicar los archivos del ZIP 1.0.1 sobre el mismo alojamiento.
+5. Probar primero con un recorrido de prueba: resultado "Otro cuál", texto, resultado "Efectiva", firma, sincronización y verificación de PNG en Drive y URL en Sheets.
+6. No borrar datos del navegador ni cambiar las llaves CAT_PROD_1_0_*.
+
+
+ACTUALIZACIÓN 1.0.2 — CONTROL DE CONFIRMACIÓN DE FIRMAS
+- El aplicativo distingue entre recorridos sincronizados y firmas pendientes.
+- Si Drive no confirma la firma, muestra el error devuelto por Apps Script y conserva la imagen local.
+- Si la firma se guarda, informa cuántas firmas quedaron en Drive.
+- El servidor conserva URL_FIRMA existente cuando recibe una actualización del recorrido sin una URL local.
+- Esta actualización no cambia las claves de almacenamiento local ni el endpoint /exec.
+
+
+ACTUALIZACIÓN 1.0.3
+- Permite capturar y reintentar firmas desde recorridos finalizados sin reabrir ni modificar resultados/GPS.
+- La firma se conserva localmente hasta confirmación real de Drive.
+- El botón de sincronización de un recorrido finalizado se habilita cuando hay firmas pendientes locales.
+- Se incorporan 17 asignaciones de sobremuestra: Solano (Ruta 6) y Puerto Leguízamo (Ruta 7).
+- Se agregan al final de SABANA_RECOLECCION las columnas TIPO_MUESTRA y RUTA, sin reordenar las columnas existentes.
+- Mantener las claves locales CAT_PROD_1_0_RECORDS, CAT_PROD_1_0_QUEUE y CAT_PROD_1_0_ACTIVE.
