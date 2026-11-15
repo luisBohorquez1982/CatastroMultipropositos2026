@@ -1,0 +1,114 @@
+CATastro V2.1.1 — APLICATIVO DE RECORRIDOS Y ALMACENAMIENTO
+Fecha de construcción: 08-11-2026
+
+ALCANCE DE ESTA ENTREGA
+Esta versión se concentra en la operación del aplicativo de recorridos y la conservación de la información. La integración con Kobo se deja expresamente fuera de alcance, tal como solicitó el usuario.
+
+CONTENIDO
+- index.html / styles.css / app.js: interfaz y lógica de recorridos.
+- assignments.js: muestra oficial precargada del archivo Selección Muestra_20261107.xlsx.
+- Code.gs: backend de sincronización con Google Sheets.
+- sw.js / manifest.webmanifest: funcionamiento PWA y actualización de caché.
+
+MUESTRA INCORPORADA Y VALIDADA ESTÁTICAMENTE
+- 135 asignaciones: 105 urbanas y 30 segmentos rurales dispersos.
+- 480 personas rurales distribuidas en los 30 segmentos.
+- 9 municipios con metas esperadas.
+- Rural: identificador de persona ID_VEREDA-SEGMENTO-CONSECUTIVO, por ejemplo 5007-11-001.
+- Los códigos y consecutivos se mantienen como texto.
+
+ALMACENAMIENTO Y SEGURIDAD OPERATIVA
+- Guardado local en localStorage con verificación de escritura y manejo explícito de errores.
+- Cola de sincronización independiente; una modificación no reemplaza físicamente el historial.
+- Reintentos de sincronización y confirmación del servidor por requestId.
+- Escritura idempotente en la sábana versionada SABANA_RECOLECCION_V21.
+- Eliminación lógica: estado_registro=ELIMINADO y fecha de eliminación; no borra filas.
+- Respaldo local descargable en JSON y restauración por combinación de ID_RECORRIDO, sin vaciar la base local.
+- Los recorridos finalizados quedan en modo consulta.
+- Se conserva migración de las llaves locales heredadas CATASTRO_V11_RECORDS y CATASTRO_V11_QUEUE.
+
+FLUJO DE CAMPO
+- Urbana/cabecera/centro poblado: se conserva el flujo de viviendas y el sorteo local actualmente previsto por el aplicativo.
+- Rural disperso: se trabaja el listado de personas del segmento; no se transforma en listado de viviendas.
+- Viviendas adicionales rurales: se capturan al cerrar el segmento, se identifican como AD y no se mezclan con el listado original de personas.
+- Resultados y GPS se guardan localmente antes de sincronizar.
+- Kobo no se abre ni se configura en esta versión.
+
+VALIDACIONES REALIZADAS EN ESTA ENTREGA
+- node --check app.js: aprobado.
+- node --check Code.gs (sintaxis JavaScript compatible): aprobado.
+- Lectura de assignments.js: 135 asignaciones, 105 urbanas, 30 rurales, 480 personas y 9 metas municipales.
+- No se ejecutaron pruebas de integración contra la hoja de cálculo de producción ni contra dispositivos reales. Se debe validar primero con una copia de la hoja y dos dispositivos de prueba.
+
+PRUEBAS OBLIGATORIAS ANTES DE PRODUCCIÓN
+1. Crear un recorrido, cambiar resultados y GPS, cerrar navegador y recuperar.
+2. Guardar parcialmente sin conexión, reconectar y verificar confirmación del servidor.
+3. Editar un recorrido mientras hay una sincronización pendiente y comprobar que no se pierde la versión más reciente.
+4. Eliminar lógicamente un recorrido, sincronizar y verificar que la fila permanece con estado ELIMINADO.
+5. Descargar respaldo, limpiar únicamente un perfil de prueba, restaurar y verificar los recorridos y la cola.
+6. Probar el mismo segmento rural en dos dispositivos; no deben operar simultáneamente la misma asignación sin una regla de coordinación. La asignación local no bloquea por servidor.
+7. Probar viviendas adicionales, cancelación de captura y reanudación.
+
+DESPLIEGUE
+- No sustituir la versión productiva hasta completar las pruebas.
+- Para publicar el backend: pegar Code.gs en el proyecto Apps Script correspondiente, guardar y actualizar la implementación existente como nueva versión, conservando la URL /exec.
+- No borrar caché, localStorage ni colas de los dispositivos reales.
+- La sábana destino de esta candidata es SABANA_RECOLECCION_V21; verificar su configuración/permisos antes de desplegar.
+
+
+VERSIÓN 2.1.16
+- La restauración de respaldos JSON utiliza el modal visual del aplicativo; se eliminó el confirm() nativo del navegador.
+- La finalización exige resultado de visita y GPS capturado para cada registro visible, incluidas viviendas adicionales.
+- Los faltantes se señalan en rojo debajo de la vivienda/persona y el aplicativo lleva al primer registro pendiente.
+- La cola local y el respaldo JSON se conservan; no se eliminan registros si no hay confirmación del servidor.
+
+
+VERSIÓN 2.1.16
+- Se corrigió el orden de validación al finalizar recorridos rurales: primero valida que todas las personas tengan resultado; luego pregunta si se encontraron viviendas adicionales; finalmente exige GPS de todos los registros visibles, incluidas las viviendas adicionales.
+- Si se responde No a viviendas adicionales, continúa con la validación GPS sin finalizar ni sincronizar prematuramente.
+
+
+VERSIÓN 2.1.16
+- El botón Finalizar y sincronizar permanece siempre habilitado y conserva su texto; la sincronización de fondo no lo deshabilita ni lo convierte en un indicador temporal.
+- El clic manual valida resultados, ejecuta la pregunta de viviendas adicionales para rural, valida GPS y finaliza/sincroniza únicamente cuando corresponde.
+- Se conserva el guardado local y la sincronización de fondo de la cola. Si el clic manual ocurre mientras hay un envío en curso, se programa el envío de los registros restantes al terminar el lote actual.
+
+
+VERSIÓN 2.1.16 – CORRECCIÓN SOLICITADA
+- El botón Finalizar y sincronizar ya no se deshabilita ni cambia de texto durante la sincronización automática de fondo. Solo queda bloqueado cuando el recorrido ya está finalizado.
+- La sincronización de fondo no controla visualmente el botón manual.
+- Al eliminar una asignación, se marcan como ELIMINADOS todos los recorridos locales duplicados de esa misma asignación, conservándolos como historial lógico y liberando la asignación para volver a crear el recorrido.
+- La detección de recorridos activos interpreta el estado ELIMINADO sin distinguir mayúsculas/minúsculas.
+
+
+VERSIÓN 2.1.16 – HOTFIX DE SINCRONIZACIÓN
+- Se declara correctamente el indicador syncRequested que usa la cola cuando el usuario finaliza mientras hay una sincronización de fondo en curso. En V2.1.15 se referenciaba sin declararlo, lo que podía interrumpir el flujo con ReferenceError.
+- Se conserva el botón manual con texto estable; el envío manual queda en cola y se ejecuta al terminar el lote que ya estaba en curso.
+
+
+HOTFIX 2.1.18 — SINCRONIZACIÓN
+- Mantiene el mismo endpoint y token del backend 2.1.11.
+- Reintenta el POST con el mismo requestId cuando no llega confirmación.
+- El reenvío es idempotente para evitar duplicar registros.
+- Los errores definitivos del servidor se muestran inmediatamente, sin esperar todo el ciclo de reintentos.
+- No modifica el Code.gs ni la estructura de la sábana.
+
+
+HOTFIX 2.1.19 — RESTAURACIÓN DE SINCRONIZACIÓN
+Base: CATastro V2.1.17 del usuario.
+Comparación de referencia: CATastro V2.1.11_SYNC_OFFLINE_OPTIMIZADO.
+- Se restaura el protocolo de sincronización probado en 2.1.11: un POST por lote y consulta JSONP de confirmación.
+- Se elimina el reenvío POST introducido en la 2.1.18.
+- Se corrige ReferenceError en validación GPS de 2.1.17 (referencia a h fuera del callback).
+- Se conserva el resto de cambios funcionales de 2.1.17.
+- Se mantiene el botón habilitado durante sincronización de fondo; los clics manuales quedan en espera del ciclo activo.
+No se modifica Code.gs; sigue usando backend 2.1.11.
+
+
+ACTUALIZACIÓN 1.0.3
+- Permite capturar y reintentar firmas desde recorridos finalizados sin reabrir ni modificar resultados/GPS.
+- La firma se conserva localmente hasta confirmación real de Drive.
+- El botón de sincronización de un recorrido finalizado se habilita cuando hay firmas pendientes locales.
+- Se incorporan 17 asignaciones de sobremuestra: Solano (Ruta 6) y Puerto Leguízamo (Ruta 7).
+- Se agregan al final de SABANA_RECOLECCION las columnas TIPO_MUESTRA y RUTA, sin reordenar las columnas existentes.
+- Mantener las claves locales CAT_PROD_1_0_RECORDS, CAT_PROD_1_0_QUEUE y CAT_PROD_1_0_ACTIVE.
