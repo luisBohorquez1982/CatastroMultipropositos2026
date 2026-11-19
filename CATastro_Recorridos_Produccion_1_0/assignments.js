@@ -7170,6 +7170,86 @@ window.CATASTRO_ASSIGNMENTS = [
     "orden": "20",
     "personas": [],
     "muestraTipo": "sobremuestra"
+  },
+  {
+    "tipo": "URBANA",
+    "departamento": "Bolívar",
+    "municipio": "San Estanislao",
+    "codigoMunicipio": "13647",
+    "clase": "Centro Poblado",
+    "area": "1364720020500200010125",
+    "mgn": "1364720020500200010125",
+    "idUpm": "1627",
+    "idAsignacion": "U-1627-1364720020500200010125-SOB",
+    "nimBase": "1627",
+    "supervisor": "Jonny Ramirez Arias",
+    "encuestadores": [
+      "Zulena Benitez Romero",
+      "Noritza del Carmen Sanchez Rios",
+      "Luz kelly Beltrán Álvarez"
+    ],
+    "orden": "4",
+    "personas": []
+  },
+  {
+    "tipo": "URBANA",
+    "departamento": "Bolívar",
+    "municipio": "San Estanislao",
+    "codigoMunicipio": "13647",
+    "clase": "Centro Poblado",
+    "area": "1364720020500200010215",
+    "mgn": "1364720020500200010215",
+    "idUpm": "2096",
+    "idAsignacion": "U-2096-1364720020500200010215-SOB",
+    "nimBase": "2096",
+    "supervisor": "Jonny Ramirez Arias",
+    "encuestadores": [
+      "Zulena Benitez Romero",
+      "Noritza del Carmen Sanchez Rios",
+      "Luz kelly Beltrán Álvarez"
+    ],
+    "orden": "5",
+    "personas": []
+  },
+  {
+    "tipo": "URBANA",
+    "departamento": "Bolívar",
+    "municipio": "San Estanislao",
+    "codigoMunicipio": "13647",
+    "clase": "Centro Poblado",
+    "area": "1364720020500200010119",
+    "mgn": "1364720020500200010119",
+    "idUpm": "426",
+    "idAsignacion": "U-426-1364720020500200010119-SOB",
+    "nimBase": "426",
+    "supervisor": "Jonny Ramirez Arias",
+    "encuestadores": [
+      "Zulena Benitez Romero",
+      "Noritza del Carmen Sanchez Rios",
+      "Luz kelly Beltrán Álvarez"
+    ],
+    "orden": "6",
+    "personas": []
+  },
+  {
+    "tipo": "URBANA",
+    "departamento": "Bolívar",
+    "municipio": "San Estanislao",
+    "codigoMunicipio": "13647",
+    "clase": "Centro Poblado",
+    "area": "1364720020500200010418",
+    "mgn": "1364720020500200010418",
+    "idUpm": "593",
+    "idAsignacion": "U-593-1364720020500200010418-SOB",
+    "nimBase": "593",
+    "supervisor": "Jonny Ramirez Arias",
+    "encuestadores": [
+      "Zulena Benitez Romero",
+      "Noritza del Carmen Sanchez Rios",
+      "Luz kelly Beltrán Álvarez"
+    ],
+    "orden": "7",
+    "personas": []
   }
 ];
 window.CATASTRO_EXPECTED = [
